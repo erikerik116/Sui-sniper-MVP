@@ -1,0 +1,40 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+import { SuiClient } from '@mysten/sui/client';
+
+export interface Dex {
+    MoveEventType: string;
+    GetPools: () => Promise<Pool[]>;
+    PoolIds: Set<string>;
+    Client: SuiClient;
+    Limit: number;
+}
+
+export interface Pool {
+    poolId: string;
+    coin_a: string;
+    coin_b: string;
+    dex: string;
+    poolCreated: number;
+}
+
+export const loadDexes = async (client: SuiClient): Promise<Record<string, Dex>> => {
+    const dexes: Record<string, Dex> = {};
+    const files = fs.readdirSync(__dirname);
+
+    for (const file of files) {
+        if (file !== 'index.ts' && file.endsWith('.ts')) {
+            const modulePath = path.join(__dirname, file);
+            const dexModule = await import(modulePath);
+
+            if (dexModule.default) {
+                const dex: Dex = dexModule.default;
+                dex.Client = client; // Assign the passed SuiClient instance
+                dexes[dex.MoveEventType] = dex; // Use the MoveEventType as the key
+            }
+        }
+    }
+
+    return dexes;
+};
