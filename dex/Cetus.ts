@@ -26,10 +26,11 @@ const Cetus: Dex = {
 
 
 async function parseEventToPool(event: any) {
+    console.log(event)
     const pool: Pool = {
         poolId: event.pool_id,
-        coin_a: `0x${event.token_y_name}`,
-        coin_b: `0x${event.token_x_name}`,
+        coin_a: `0x${event.coin_type_a}`,
+        coin_b: `0x${event.coin_type_b}`,
         dex: 'Cetus',
         poolCreated: Date.now()
     }
