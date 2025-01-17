@@ -3,18 +3,21 @@ import { SuiClient } from '@mysten/sui/client';
 
 
 const Turbos: Dex = {
+    Name: 'Turbos',
     MoveEventType: '0x91bfbc386a41afcfd9b2533058d7e915a1d3829089cc268ff4333d54d6339ca1::pool_factory::PoolCreatedEvent',
     GetPools: async function() {
         const eventsResult: any = await this.Client.queryEvents({
             query: { MoveEventType: this.MoveEventType },
             order: "descending",
-            limit: 25,
+            limit: this.Limit,
         });
     
         let pools: Pool[] = []
         for(const e of eventsResult.data) {
             if(!this.PoolIds.has(e.parsedJson.pool)) {
                 const pool = await parseEventToPool(this.Client, e.parsedJson)
+                if(pool.poolId)
+                    pool.CoinMetadata = await this.Client.getCoinMetadata({ coinType: pool.coin_a })
                 this.PoolIds.add(e.parsedJson.pool)
                 pools.push(pool)
             }

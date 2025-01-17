@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { SuiClient } from '@mysten/sui/client';
+import { CoinMetadata, SuiClient } from '@mysten/sui/client';
 
 export interface Dex {
+    Name: string;
     MoveEventType: string;
     GetPools: () => Promise<Pool[]>;
     PoolIds: Set<string>;
@@ -17,6 +18,7 @@ export interface Pool {
     coin_b: string;
     dex: string;
     poolCreated: number;
+    CoinMetadata?: CoinMetadata | null;
 }
 
 export const loadDexes = async (client: SuiClient): Promise<Record<string, Dex>> => {
@@ -31,7 +33,7 @@ export const loadDexes = async (client: SuiClient): Promise<Record<string, Dex>>
             if (dexModule.default) {
                 const dex: Dex = dexModule.default;
                 dex.Client = client; // Assign the passed SuiClient instance
-                dexes[dex.MoveEventType] = dex; // Use the MoveEventType as the key
+                dexes[dex.Name] = dex; // Use the MoveEventType as the key
             }
         }
     }

@@ -7,10 +7,9 @@ const main = async () => {
 
     for (const _dex of Object.keys(dexes)) {
         const dex = dexes[_dex]
-        console.log(`Using ${dex.MoveEventType} with client`);
-        console.log(dex.Client); // Access the client instance if needed
+        dex.Limit = 2
         const pools = await dex.GetPools();
-        console.log(`Pools for ${dex.MoveEventType}:`, pools);
+        console.log(`Pools for ${dex.Name}:`, pools);
     }
 };
 

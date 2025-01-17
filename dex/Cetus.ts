@@ -1,6 +1,7 @@
 import { Dex, Pool } from './index';
 
 const Cetus: Dex = {
+    Name: 'Cetus',
     MoveEventType: '0x1eabed72c53feb3805120a081dc15963c204dc8d091542592abaf7a35689b2fb::factory::CreatePoolEvent',
     GetPools: async function() {
         const eventsResult: any = await this.Client.queryEvents({
@@ -13,6 +14,8 @@ const Cetus: Dex = {
         for(const e of eventsResult.data) {
             if(!this.PoolIds.has(e.parsedJson.pool_id)) {
                 const pool = await parseEventToPool(e.parsedJson)
+                if(pool.poolId)
+                    pool.CoinMetadata = await this.Client.getCoinMetadata({ coinType: pool.coin_a })
                 this.PoolIds.add(e.parsedJson.pool_id)
                 pools.push(pool)
             }
@@ -26,7 +29,6 @@ const Cetus: Dex = {
 
 
 async function parseEventToPool(event: any) {
-    console.log(event)
     const pool: Pool = {
         poolId: event.pool_id,
         coin_a: `0x${event.coin_type_a}`,

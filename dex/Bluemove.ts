@@ -1,6 +1,7 @@
 import { Dex, Pool } from './index';
 
 const Bluemove: Dex = {
+    Name: 'Bluemove',
     MoveEventType: '0xb24b6789e088b876afabca733bed2299fbc9e2d6369be4d1acfa17d8145454d9::swap::Created_Pool_Event',
     GetPools: async function() {
         const eventsResult: any = await this.Client.queryEvents({
@@ -13,6 +14,8 @@ const Bluemove: Dex = {
         for(const e of eventsResult.data) {
             if(!this.PoolIds.has(e.parsedJson.pool_id)) {
                 const pool = await parseEventToPool(e.parsedJson)
+                if(pool.poolId)
+                    pool.CoinMetadata = await this.Client.getCoinMetadata({ coinType: pool.coin_a })
                 this.PoolIds.add(e.parsedJson.pool_id)
                 pools.push(pool)
             }
