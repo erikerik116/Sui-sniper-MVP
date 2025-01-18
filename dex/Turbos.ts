@@ -72,7 +72,7 @@ function getTurbosPoolTokens(typeField: string) {
 	  coin_b: genericArgs[1], // First generic argument
 	  coin_a: genericArgs[0], // Second generic argument
 	};
-  }
+}
 
 
 export default Turbos;

@@ -9,3 +9,13 @@ export function convertMYSTtoSUI(mystAmount: Decimal.Value) {
 export function formatUSDC(usdcAmount: Decimal.Value) {
 	return new Decimal(usdcAmount).dividedBy(new Decimal(10).pow(6)).toFixed(2);
 }
+
+export function getMinutesSinceEpoch(epochMillis: number) {
+	const currentMillis = Date.now(); // Current time in milliseconds
+	const differenceMillis = currentMillis - epochMillis; // Time difference in milliseconds
+	return Math.floor(differenceMillis / (1000 * 60)); // Convert to minutes
+}
+
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
