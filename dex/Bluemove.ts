@@ -1,4 +1,4 @@
-import { Dex, Pool } from './index';
+import { Dex, Pool, populateLiquidity, populateMetadata } from './index';
 
 const Bluemove: Dex = {
     Name: 'Bluemove',
@@ -14,12 +14,12 @@ const Bluemove: Dex = {
         for(const e of eventsResult.data) {
             if(!this.PoolIds.has(e.parsedJson.pool_id)) {
                 const pool = await parseEventToPool(e.parsedJson)
-                if(pool.poolId)
-                    pool.CoinMetadata = await this.Client.getCoinMetadata({ coinType: pool.coin_a })
                 this.PoolIds.add(e.parsedJson.pool_id)
                 pools.push(pool)
             }
         };
+        await populateLiquidity(this.Client, pools)
+        await populateMetadata(this.Client, pools)
         return pools
     },
     PoolIds: new Set<string>(),

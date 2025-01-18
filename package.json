@@ -5,6 +5,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@mysten/sui": "^1.19.0"
+    "@mysten/sui": "^1.19.0",
+    "decimal.js": "^10.4.3"
   }
 }

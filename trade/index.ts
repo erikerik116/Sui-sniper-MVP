@@ -11,7 +11,6 @@ export enum TradeStatus {
 
 export interface Trade extends Pool {
     status: TradeStatus;
-    liquidity: number;
     created: number;
     opened: number;
     cost: number;
@@ -25,3 +24,4 @@ export interface Trade extends Pool {
     creator?: string;
     note?: string;
 }
+

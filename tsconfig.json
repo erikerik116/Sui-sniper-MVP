@@ -11,7 +11,7 @@
       "skipLibCheck": true, // Skips type checking of declaration files for faster compilation
       "baseUrl": "./", // Set base URL for resolving non-relative module imports
       "paths": {
-        "*": ["node_modules/*"] // Resolve all modules from `node_modules`
+        "*": ["node_modules/*"], // Resolve all modules from `node_modules`
       },
       "types": ["node"], // Include Node.js types
       "allowJs": true, // Allow JavaScript files to be imported

@@ -1,4 +1,4 @@
-import { Dex, Pool } from './index';
+import { Dex, Pool, populateLiquidity, populateMetadata } from './index';
 import { SuiClient } from '@mysten/sui/client';
 
 
@@ -16,12 +16,12 @@ const Turbos: Dex = {
         for(const e of eventsResult.data) {
             if(!this.PoolIds.has(e.parsedJson.pool)) {
                 const pool = await parseEventToPool(this.Client, e.parsedJson)
-                if(pool.poolId)
-                    pool.CoinMetadata = await this.Client.getCoinMetadata({ coinType: pool.coin_a })
                 this.PoolIds.add(e.parsedJson.pool)
                 pools.push(pool)
             }
         };
+        await populateMetadata(this.Client, pools)
+        await populateLiquidity(this.Client, pools)
         return pools
     },
     PoolIds: new Set<string>(),

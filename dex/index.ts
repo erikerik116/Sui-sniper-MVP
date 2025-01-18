@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { CoinMetadata, SuiClient } from '@mysten/sui/client';
+import { convertMYSTtoSUI } from '../utils';
 
 export interface Dex {
     Name: string;
@@ -18,7 +19,8 @@ export interface Pool {
     coin_b: string;
     dex: string;
     poolCreated: number;
-    CoinMetadata?: CoinMetadata | null;
+    metadata?: CoinMetadata | null;
+    liquidity?: string;
 }
 
 export const loadDexes = async (client: SuiClient): Promise<Record<string, Dex>> => {
@@ -37,6 +39,31 @@ export const loadDexes = async (client: SuiClient): Promise<Record<string, Dex>>
             }
         }
     }
-
     return dexes;
 };
+
+export async function getLiquidity(client: SuiClient, poolId: any) {
+	const ob: any = await client.getObject({ id: poolId, options: { showContent: true }})
+	const content: any = ob.data.content
+	const liq0 = content.fields.coin_b || content.fields.reserve_x
+	const liquidity: string = convertMYSTtoSUI(liq0*2)
+	return liquidity
+}
+
+type PoolListFunc = (client: SuiClient, pools: Pool[]) => Promise<boolean>
+
+export const populateLiquidity: PoolListFunc = async (client: SuiClient, pools: Pool[]) => {
+    for(const pool of pools) {
+        const liquidity = await getLiquidity(client, pool.poolId)
+        pool.liquidity = liquidity
+    }
+    return true
+}
+
+export const populateMetadata: PoolListFunc = async (client: SuiClient, pools: Pool[]) => {
+    for(const pool of pools) {
+        const metadata = await client.getCoinMetadata({ coinType: pool.coin_a })
+        pool.metadata = metadata
+    }
+    return true
+}
