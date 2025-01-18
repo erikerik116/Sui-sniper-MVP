@@ -32,12 +32,12 @@ const main = async () => {
 
     for (const _dex of Object.keys(dexes)) {
         const dex = dexes[_dex]
-        dex.Limit = 2
+        dex.Limit = 10
         const pools = await dex.GetPools();
-        console.log(`Pools for ${dex.Name}:`, pools);
+        console.log(`Pools for ${dex.Name}:`, pools.length);
         const trades = await filter.filterPools(pools)
         console.log("TRADES:", trades)
-        await sleep(5000)
+        //await sleep(5000)
     }
 };
 

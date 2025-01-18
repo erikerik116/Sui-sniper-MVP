@@ -8,6 +8,10 @@ const Liquidity: TradeFilterPlugin = {
     TradeFilterRule: undefined as any,
     CheckTrades: async function name(tradeList:Trade[]) {
         const config: Object = this.TradeFilterRule?.Params || {}
+        if(config['disabled']) {
+            console.log(`${this.Name} is disabled`)
+            return true;
+        }
         const minLiquidity: number = config['minLiquidity'] || 500
         console.log(`Checking for minimum liquidity of '${minLiquidity}'`)
         for(const trade of tradeList.filter(t => t.status === TradeStatus.New)) {
